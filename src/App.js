@@ -1,25 +1,48 @@
-import logo from './logo.svg';
+import {useState, useEffect} from "react"
 import './App.css';
 
 function App() {
+  const [currentTime, setCurrentTime] = useState(new Date());
+  useEffect(()=> {
+    const timer = setInterval(()=>{
+      setCurrentTime(new Date());
+    },1000);
+
+    return () => clearInterval(timer);
+
+  },[]);
+
+  const formatTimeWithLeadingZero = (num) => {
+    return num < 10 ? `0${num}` : num;          //this fn is for 0adding in front
+  };
+
+  const formatHour = (hour) => {
+    return hour === 0 ? 12 :hour>12?hour-12:hour;  //this fn is for 13 14 varama 2 3 varathuku
+
+  };
+
+const formDate = (date) => {
+  const options = { weekday: "long", year : "numeric" , month:"long", day: "numeric"};
+  return date.toLocaleDateString(undefined,options);
+};
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <>
+    <div className="digital-clock">
+      <h1>Digital clock</h1>
+      <div className="time">{formatTimeWithLeadingZero(formatHour(currentTime.getHours()))}:
+      {formatTimeWithLeadingZero(currentTime.getMinutes())}:
+      {formatTimeWithLeadingZero(currentTime.getSeconds())}
+      {currentTime.getHours() >= 12 ? "PM" : "AM"}
+
+
+      </div>
+      <div className="date">{formDate(currentTime)} </div>
     </div>
+    </>
   );
-}
+    
+};
 
 export default App;
